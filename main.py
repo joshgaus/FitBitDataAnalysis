@@ -1,39 +1,55 @@
+from datetime import datetime
+
+import zoneinfo
 from pathlib import Path
+
 import pandas as pd
+from pandas import DataFrame
 
 google_health_dir = Path(__file__).resolve().parent / "Google Health"
-paths_to_useful_health_folders = [Path(google_health_dir / "Active Zone Minutes (AZM)"),
-                                  Path(google_health_dir / "Global Export Data"),
-                                  Path(google_health_dir / "Health Fitness Data_GoogleData"),
-                                  Path(google_health_dir / "Heart Rate Variability"),
-                                  Path(google_health_dir / "Oxygen Saturation (SpO2)"),
-                                  Path(google_health_dir / "Physical Activity_GoogleData"),
-                                  Path(google_health_dir / "Sleep Score"),
-                                  Path(google_health_dir / "Temperature")]
-relevant_csv_files = ["sleep_score",
+relevant_csv_file_keywords = ["sleep_score",
                   "daily_resting_heart_rate",
                   "daily_respiratory_rate",
                   "daily_readiness",
                   "daily_oxygen_saturation",
                   "daily_heart_rate_variability",
                   "cardio_load_observed_interval",
-                  "cardio_acute_chronic_workload_ratio",
-                  "Daily SpO2 -",
-                  "Daily Respiratory Rate Summary",
-                  "Daily Heart Rate Variability Summary",]
-relevant_json_files = ["time_in_heart_rate_zones",  # 1 .json file per day
+                  "cardio_acute_chronic_workload_ratio"]
+                 # "Daily SpO2 -"]
+                 # "Daily Respiratory Rate Summary"
+                 # "Daily Heart Rate Variability Summary",]
+relevant_json_file_keywords = ["time_in_heart_rate_zones",  # 1 .json file per day
                   "sedentary_minutes-"]             # 1 .json file per month
 
-def import_health_data():
-    print("Upload your Google Health folder.")
-    # > Some sort of interface to upload Google Health folder
-    # Google health folder will eventually have to upload straight into project folder (whatever folder the script's in)
-    # so that read_health_folder_can see it
+# main_data is the primary dataframe which all other data is imported into
+main_data = DataFrame
 
 
-def find_relevant_file_paths():
-    for i in relevant_csv_files:
-        print(list(google_health_dir.rglob(str(i) + "*.csv")))
-    for i in relevant_json_files:
-        print(list(google_health_dir.rglob(str(i) + "*.json")))
-find_relevant_file_paths()
+
+def read_csvs_to_dataframe():
+    # daily_resting_heart_rate.csv
+    # Reads relevant columns into df, formats the timestamp
+    daily_rhr_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_resting_heart_rate.csv"
+    # Relevant columns:
+    df = pd.read_csv(daily_rhr_csv_path, usecols=[0,1], parse_dates=True)
+
+    # earliest_date for knowing when to start data for spreadsheet based on earliest resting heart rate data
+    earliest_date = datetime.now(zoneinfo.ZoneInfo("America/New_York"))
+    # Converts timestamps to pandas-readable format
+    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
+    # Finds earliest date in the rhr dataset. This date to the current day is populated into the main dataframe
+    for timestamp in df["timestamp"]:
+        if earliest_date > timestamp:
+            earliest_date = timestamp
+
+    main_frame = df
+
+    # sleep_score.csv
+    # Reads sleep_score.csv's relevant columns, formats the timestamp
+    sleep_score_csv_path = google_health_dir / "Sleep Score" / "sleep_score.csv"
+    # Relevant columns: 1-timestamp, 2-overall score, 6-deep sleep in minutes, 7-resting heart rate, 8-restlessness
+    df = pd.read_csv(sleep_score_csv_path, usecols=[1,2,6,8],parse_dates=True)
+
+    # Reconcile relevant rows in sleep_score.csv and main dataframe
+
+read_csvs_to_dataframe()
