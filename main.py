@@ -21,35 +21,28 @@ relevant_csv_file_keywords = ["sleep_score",
 relevant_json_file_keywords = ["time_in_heart_rate_zones",  # 1 .json file per day
                   "sedentary_minutes-"]             # 1 .json file per month
 
-# main_data is the primary dataframe which all other data is imported into
-main_data = DataFrame
-
-
-
 def read_csvs_to_dataframe():
+    # main_data is the primary dataframe which all other data is imported into
+    main_frame = pd.DataFrame()
+
     # daily_resting_heart_rate.csv
     # Reads relevant columns into df, formats the timestamp
     daily_rhr_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_resting_heart_rate.csv"
-    # Relevant columns:
+    # Relevant columns: 0-timestamp, 1-rhr in bpm
     df = pd.read_csv(daily_rhr_csv_path, usecols=[0,1], parse_dates=True)
+    df = df.rename(columns={"beats per minute": "rhr in bpm"})
 
-    # earliest_date for knowing when to start data for spreadsheet based on earliest resting heart rate data
-    earliest_date = datetime.now(zoneinfo.ZoneInfo("America/New_York"))
-    # Converts timestamps to pandas-readable format
-    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
-    # Finds earliest date in the rhr dataset. This date to the current day is populated into the main dataframe
-    for timestamp in df["timestamp"]:
-        if earliest_date > timestamp:
-            earliest_date = timestamp
-
-    main_frame = df
+    main_frame = pd.concat([main_frame, df])
+    main_frame["timestamp"] = pd.to_datetime(main_frame["timestamp"], format="ISO8601")
 
     # sleep_score.csv
     # Reads sleep_score.csv's relevant columns, formats the timestamp
     sleep_score_csv_path = google_health_dir / "Sleep Score" / "sleep_score.csv"
-    # Relevant columns: 1-timestamp, 2-overall score, 6-deep sleep in minutes, 7-resting heart rate, 8-restlessness
+    # Relevant columns: 1-timestamp, 2-overall score, 6-deep sleep in minutes, 8-restlessness
     df = pd.read_csv(sleep_score_csv_path, usecols=[1,2,6,8],parse_dates=True)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
 
-    # Reconcile relevant rows in sleep_score.csv and main dataframe
-
+    #Reconcile relevant rows in sleep_score.csv and main dataframe
+    for timestamp in df["timestamp"]:
+        if timestamp == main_frame["timestamp"]
 read_csvs_to_dataframe()
