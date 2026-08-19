@@ -43,6 +43,12 @@ def read_csvs_to_dataframe():
     df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
 
     #Reconcile relevant rows in sleep_score.csv and main dataframe
-    for timestamp in df["timestamp"]:
-        if timestamp == main_frame["timestamp"]
+    for df_index, df_timestamp in enumerate(df["timestamp"]):
+        for mf_index, mf_timestamp in enumerate(main_frame["timestamp"]):
+            #print(df_timestamp.date)
+            if df_timestamp.normalize == mf_timestamp.normalize:
+                print(True)
+                main_frame = pd.concat([main_frame.iloc[mf_index], df.iloc[df_index, 1:]], axis=1)
+
+   # print(main_frame.to_string())
 read_csvs_to_dataframe()
