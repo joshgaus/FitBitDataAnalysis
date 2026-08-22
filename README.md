@@ -6,7 +6,7 @@ TODO
 1. Read all relevant data from files into main spreadsheet
    - ✔️sleep_score
    - ✔️daily_resting_heart_rate
-   - daily_respiratory_rate
+   - ✔️daily_respiratory_rate
    - daily_readiness
    - daily_oxygen_saturation
    - daily_heart_rate_variability
@@ -16,6 +16,8 @@ TODO
    - Daily Heart Rate Variability Summary
    - time_in_heart_rate_zones
    - sedentary_minutes
+   - Make function for reusability
+   - Read wake up time from sleep_score (right now its normalizing the timestamp to just the date)
 2. Visualize data
 3. Perform correlation analysis on data for insights
 4. Allow for use with web portal
