@@ -1,9 +1,8 @@
 from pathlib import Path
 import pandas as pd
 
-google_health_dir = Path(__file__).resolve().parent / "Google Health"
-
-def read_csvs_to_dataframe():
+def main():
+    google_health_dir = Path(__file__).resolve().parent / "Google Health"
 
     # main_data is the primary dataframe which all other data is imported into
     main_frame = pd.DataFrame()
@@ -17,9 +16,11 @@ def read_csvs_to_dataframe():
 
     main_frame = pd.concat([main_frame, df])
     main_frame["timestamp"] = pd.to_datetime(main_frame["timestamp"], format="ISO8601")
+
     sleep_score_csv_path = google_health_dir / "Sleep Score" / "sleep_score.csv"
-    daily_respiratory_rate_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_respiratory_rate.csv"
     main_frame = read_csv_into_main_frame(main_frame, sleep_score_csv_path, [1,2,6,8])
+
+    daily_respiratory_rate_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_respiratory_rate.csv"
     main_frame = read_csv_into_main_frame(main_frame, daily_respiratory_rate_csv_path, [0,1])
     print(main_frame.to_string())
 
@@ -44,4 +45,5 @@ def read_csv_into_main_frame(mf: pd.DataFrame, csv_path: Path, col_nums_for_df: 
                     mf.at[mf_index, column] = df.at[df_index, column]
     return mf
 
-read_csvs_to_dataframe()
+if __name__ == "__main__":
+    main()
