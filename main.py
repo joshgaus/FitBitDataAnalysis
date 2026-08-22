@@ -2,6 +2,7 @@ from datetime import datetime
 
 import zoneinfo
 from pathlib import Path
+from tabnanny import NannyNag
 
 import pandas as pd
 from pandas import DataFrame
@@ -37,18 +38,23 @@ def read_csvs_to_dataframe():
 
     # sleep_score.csv
     # Reads sleep_score.csv's relevant columns, formats the timestamp
+
+    # Initialize rows to be filled in main_frame from sleep_score.csv
+    main_frame["overall sleep score"] = None
+    main_frame["deep sleep in minutes"] = None
+    main_frame["restlessness"] = None
+
     sleep_score_csv_path = google_health_dir / "Sleep Score" / "sleep_score.csv"
-    # Relevant columns: 1-timestamp, 2-overall score, 6-deep sleep in minutes, 8-restlessness
+    # Relevant columns: 1-timestamp, 2-overall_score, 6-deep_sleep_in_minutes, 8-restlessness
     df = pd.read_csv(sleep_score_csv_path, usecols=[1,2,6,8],parse_dates=True)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
+    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601").dt.normalize()
 
     #Reconcile relevant rows in sleep_score.csv and main dataframe
-    for df_index, df_timestamp in enumerate(df["timestamp"]):
-        for mf_index, mf_timestamp in enumerate(main_frame["timestamp"]):
-            #print(df_timestamp.date)
-            if df_timestamp.normalize == mf_timestamp.normalize:
-                print(True)
-                main_frame = pd.concat([main_frame.iloc[mf_index], df.iloc[df_index, 1:]], axis=1)
+    for mf_index, mf_timestamp in enumerate(main_frame["timestamp"]):
+        for df_index, df_timestamp in enumerate(df["timestamp"]):
+            if df_timestamp == mf_timestamp:
+                main_frame.at[mf_index, "overall sleep score"] = df.at[df_index, "overall_score"]
+                main_frame.at[mf_index, "deep sleep in minutes"] = df.at[df_index, "deep_sleep_in_minutes"]
+                main_frame.at[mf_index, "restlessness"] = df.at[df_index, "restlessness"]
 
-   # print(main_frame.to_string())
 read_csvs_to_dataframe()
