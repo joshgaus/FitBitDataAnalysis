@@ -22,6 +22,10 @@ def main():
 
     daily_respiratory_rate_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_respiratory_rate.csv"
     main_frame = read_csv_into_main_frame(main_frame, daily_respiratory_rate_csv_path, [0,1])
+
+    daily_hrv_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_heart_rate_variability.csv"
+    main_frame = read_csv_into_main_frame(main_frame, daily_hrv_csv_path, [0,1])
+
     print(main_frame.to_string())
 
 def read_csv_into_main_frame(mf: pd.DataFrame, csv_path: Path, col_nums_for_df: list[int]) -> pd.DataFrame:
