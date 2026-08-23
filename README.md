@@ -4,19 +4,19 @@ This tool allows you to automatically load your Google Health Export data into a
 
 TODO
 1. Read all relevant data from files into main spreadsheet
-   - ✔️sleep_score
-   - ✔️daily_resting_heart_rate
-   - ✔️daily_respiratory_rate
-   - daily_readiness
-   - daily_oxygen_saturation
-   - daily_heart_rate_variability
-   - cardio_load_observed_interval
-   - cardio_acute_chronic_workload_ratio
-   - Daily Respiratory Rate Summary
-   - Daily Heart Rate Variability Summary
-   - time_in_heart_rate_zones
-   - sedentary_minutes
-   - Make function for reusability
+   - ✔️ Make function for reusability
+   - ✔️ Track indicators of stress
+     - ✔️sleep_score
+     - ✔️daily_resting_heart_rate
+     - ✔️daily_respiratory_rate
+     - ✔️daily_heart_rate_variability
+   - Track user choices
+     - Time to wake up
+     - time_in_heart_rate_zones
+     - sedentary_minutes
+       - sedentary_minutes-2026-06-06.json
+       - sedentary_minutes-2026-07-06.json
+       - etc
    - Read wake up time from sleep_score (right now its normalizing the timestamp to just the date)
 2. Visualize data
 3. Perform correlation analysis on data for insights
