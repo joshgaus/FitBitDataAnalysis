@@ -10,9 +10,10 @@ TODO
      - ✔️daily_resting_heart_rate
      - ✔️daily_respiratory_rate
      - ✔️daily_heart_rate_variability
+     - ✔️cardio_acute_chronic_workload_ratio
    - Track user choices
      - Time to wake up
-     - time_in_heart_rate_zones
+     - time_in_heart_rate_zones-2026-08-07.json
      - sedentary_minutes
        - sedentary_minutes-2026-06-06.json
        - sedentary_minutes-2026-07-06.json

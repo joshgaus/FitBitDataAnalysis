@@ -26,13 +26,14 @@ def main():
     daily_hrv_csv_path = google_health_dir / "Physical Activity_GoogleData" / "daily_heart_rate_variability.csv"
     main_frame = read_csv_into_main_frame(main_frame, daily_hrv_csv_path, [0,1])
 
+    cardio_acute_chronic_workload_ratio_csv_path = google_health_dir / "Physical Activity_GoogleData" / "cardio_acute_chronic_workload_ratio.csv"
+    main_frame = read_csv_into_main_frame(main_frame, cardio_acute_chronic_workload_ratio_csv_path, [0,1,2])
     print(main_frame.to_string())
-
 def read_csv_into_main_frame(mf: pd.DataFrame, csv_path: Path, col_nums_for_df: list[int]) -> pd.DataFrame:
 
     # Read relevant data from csv into df
     df = pd.read_csv(csv_path, usecols=col_nums_for_df, parse_dates=True)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601").dt.normalize()
+    df["timestamp"] = pd.to_datetime(df["timestamp"], format="ISO8601")
 
     # Initialize empty columns in main_frame to import data from df into
     col_names = []
@@ -44,7 +45,7 @@ def read_csv_into_main_frame(mf: pd.DataFrame, csv_path: Path, col_nums_for_df: 
     # Reconcile relevant rows in csv and main_frame
     for mf_index, mf_timestamp in enumerate(mf["timestamp"]):
         for df_index, df_timestamp in enumerate(df["timestamp"]):
-            if df_timestamp == mf_timestamp:
+            if df_timestamp.date() == mf_timestamp.date():
                 for column in col_names:
                     mf.at[mf_index, column] = df.at[df_index, column]
     return mf
